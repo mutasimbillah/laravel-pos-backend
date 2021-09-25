@@ -11,6 +11,13 @@ use Laratrust\Traits\LaratrustUserTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
+ * @property int $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $phone
+ * @property string $email
+ * @property string $password
+ * @property int $status
  * @method static static create(array $data)
  */
 class User extends Authenticatable implements JWTSubject
@@ -56,5 +63,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 }
