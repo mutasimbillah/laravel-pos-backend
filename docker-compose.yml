@@ -1,0 +1,81 @@
+version: "3"
+
+services:
+    mysql:
+        restart: unless-stopped
+        image: mariadb:10.5.12-focal
+        #    command: --default-authentication-plugin=mysql_native_password
+        environment:
+            - MARIADB_DATABASE=${DB_DATABASE}
+            - MARIADB_USER=${DB_USERNAME}
+            - MARIADB_PASSWORD=${DB_PASSWORD}
+            - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+        volumes:
+            - mysql:/bitnami/mariadb
+
+    app:
+        restart: unless-stopped
+        env_file:
+            - ./.env
+        build:
+            context: .
+        ports:
+            - 8000:8000
+        volumes:
+            - ./storage:/app/storage
+
+    socket:
+        env_file:
+            - ./.env
+        image: ${COMPOSE_PROJECT_NAME}_app
+        ports:
+            - 6001:6001
+        volumes_from:
+            - app
+        depends_on:
+            - app
+        command: php artisan websockets:serve
+
+    worker:
+        env_file:
+            - ./.env
+        image: ${COMPOSE_PROJECT_NAME}_app
+        volumes_from:
+            - app
+        depends_on:
+            - app
+        command: php artisan queue:work --tries=10 --no-interaction -vv
+
+    nginx:
+        restart: unless-stopped
+        image: nginx:1.19.9-alpine
+        depends_on:
+            - app
+            - work
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./.docker/nginx/local.conf:/etc/nginx/conf.d/default.conf
+            - ./.docker/nginx/static.conf:/etc/nginx/conf.d/static.conf
+            - ./.docker/ca:/etc/nginx/ca
+            - ./storage/app/public:/var/www/html/storage:ro
+
+    work:
+        tty: true
+        env_file:
+            - ./.env
+        build:
+            context: ./.docker/work
+            args:
+                - HOST_USER_ID=$HOST_USER_ID
+                - HOST_GROUP_ID=$HOST_GROUP_ID
+        volumes:
+            - ./.docker/ca:/home/ubuntu/.local/share/mkcert
+            - .:/home/ubuntu/app
+
+    redis:
+        image: redis:5.0.6-alpine3.10
+
+volumes:
+    mysql:

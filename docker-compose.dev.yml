@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  app:
+    volumes:
+      - .:/app:cached
+    entrypoint: php artisan octane:start --host=0.0.0.0 --port=8000 --watch
+
+  phpmyadmin:
+    build:
+      context: ./.docker/phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${PMA_PORT}:80"
+    depends_on:
+      - mysql
