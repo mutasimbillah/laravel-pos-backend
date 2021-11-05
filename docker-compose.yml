@@ -24,17 +24,17 @@ services:
         volumes:
             - ./storage:/app/storage
 
-    socket:
-        env_file:
-            - ./.env
-        image: ${COMPOSE_PROJECT_NAME}_app
-        ports:
-            - 6001:6001
-        volumes_from:
-            - app
-        depends_on:
-            - app
-        command: php artisan websockets:serve
+    # socket:
+    #     env_file:
+    #         - ./.env
+    #     image: ${COMPOSE_PROJECT_NAME}_app
+    #     ports:
+    #         - 6001:6001
+    #     volumes_from:
+    #         - app
+    #     depends_on:
+    #         - app
+    #     command: php artisan websockets:serve
 
     worker:
         env_file:
