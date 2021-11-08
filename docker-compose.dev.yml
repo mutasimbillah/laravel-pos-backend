@@ -3,8 +3,8 @@ version: "3"
 services:
   app:
     volumes:
-      - .:/app:cached
-    entrypoint: php artisan octane:start --host=0.0.0.0 --port=8000 --watch
+      - .:/app
+    command: php artisan octane:start --host=0.0.0.0 --port=8000 --watch
 
   phpmyadmin:
     build:
