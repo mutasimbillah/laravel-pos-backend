@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +17,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', function () {
-    return 'Welcome';
+    return "Welcome";
 });
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::get('user', [ApiController::class, 'user']);
 });
+
+// Route::group(['middleware' => ['auth:api', 'role:super']], function () {
+//     Route::get('/user', function (Request $request) {
+//         return $request->user();
+//     });
+//Route::apiResource('/notification', NotificationController::class)->only(['store', 'index', 'show']);
+// });

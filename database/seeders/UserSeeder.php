@@ -19,24 +19,16 @@ class UserSeeder extends Seeder
     {
         Model::unguard();
         $users = [
-            'super@user.com' => [
-                'name' => 'Super',
-                'role' => UserType::SUPER
-            ],
             'admin@user.com' => [
                 'name' => 'Admin',
+                'phone' => env('ADMIN_PHONE'),
+                'password' => env('ADMIN_PASS'),
                 'role' => UserType::ADMIN
-            ],
-            'merchant@user.com' => [
-                'name' => 'Shop Owner',
-                'role' => UserType::MERCHANT
-            ],
-            'waiter@user.com' => [
-                'name' => 'Waiter',
-                'role' => UserType::WAITER
             ],
             'customer@user.com' => [
                 'name' => 'Customer',
+                'phone' => env('USER_PHONE'),
+                'password' => env('USER_PASS'),
                 'role' => UserType::CUSTOMER
             ],
         ];
@@ -44,12 +36,11 @@ class UserSeeder extends Seeder
         foreach ($users as $email => $user) {
             /** @var User $model */
             $model = User::query()->create([
-                'first_name' => $user['name'],
-                'last_name' => 'User',
-                'password' => bcrypt('secret'),
+                'name' => $user['name'],
+                'phone' => $user['phone'],
+                'password' => bcrypt($user['password']),
                 'email' => $email,
                 'email_verified_at' => now(),
-                'phone' => '+880170000000'. ++$i,
                 'phone_verified_at' => now()
             ]);
             /** @var Role $role */
