@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     /**
      * Create a new AuthController instance.
