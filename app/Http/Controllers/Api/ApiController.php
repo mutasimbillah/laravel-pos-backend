@@ -56,7 +56,7 @@ class ApiController extends BaseController
      * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public function failed($data = null, $message = "", $status = 200)
+    public function failed($data = null, $message = "", $status = 400)
     {
         return $this->success($data, $message, $status, false);
     }

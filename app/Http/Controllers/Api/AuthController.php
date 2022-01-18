@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends APiController
+class AuthController extends ApiController
 {
     /**
      * Create a new AuthController instance.
