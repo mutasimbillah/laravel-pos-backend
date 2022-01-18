@@ -6,13 +6,11 @@ use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
-use App\Models\Image;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends Controller
+class AuthController extends APiController
 {
     /**
      * Create a new AuthController instance.
@@ -33,16 +31,16 @@ class AuthController extends Controller
     {
         $user = User::where($request->only('phone'))->first();
         if (!$user) {
-            return $this->failed(
-                [],
-                "No user Found with the mobile number"
-            ); // signal that the phone doesn't exist in db
+            return $this->failed(null, "No user Found with the mobile number");
+            // signal that the phone doesn't exist in db
         }
         if (!Hash::check($request->input('password'), $user->password) || $user->status !== Status::ACTIVE) {
-            return $this->unauthorized(); // phone number exists, but the token doesn't match
+            return $this->unauthorized();
+            // phone number exists, but the token doesn't match
         }
 
-        return $this->respondWithToken($this->auth()->login($user)); // everything ok, lets login
+        return $this->respondWithToken($this->auth()->login($user));
+        // everything ok, lets login
     }
 
     /**
@@ -94,8 +92,8 @@ class AuthController extends Controller
     {
         return $this->success([
             'access_token' => $token ?: 'NAN',
-            'token_type' => 'bearer',
-            'expires_in' => $this->auth()->factory()->getTTL() * 60
+            'token_type' => 'Bearer',
+            'expires_in' => $this->auth()->factory()->getTTL()
         ]);
     }
 }
