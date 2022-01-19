@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
                 'name' => $faker->sentence(),
                 'price' => rand(30, 40) * 10,
                 'stock' => rand(10, 20),
-                'details' => $faker->paragraph()
+                'details' => $faker->paragraph(1),
             ]);
         }
     }

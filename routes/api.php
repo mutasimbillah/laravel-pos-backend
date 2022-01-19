@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::apiResource('product', ProductController::class);
+Route::apiResource('state', StateController::class);
+
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user', [ApiController::class, 'user']);

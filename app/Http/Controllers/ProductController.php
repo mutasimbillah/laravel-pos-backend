@@ -19,7 +19,6 @@ class ProductController extends ApiController
         return $this->success(ProductResource::collection($products));
     }
 
-
     public function store(ProductRequest $request)
     {
         $product = Product::query()->create($request->validated());
@@ -38,12 +37,6 @@ class ProductController extends ApiController
         return $this->success(ProductResource::make($product));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Product $product)
     {
         $product->delete();
