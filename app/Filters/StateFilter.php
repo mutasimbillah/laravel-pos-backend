@@ -2,8 +2,7 @@
 
 namespace App\Filters;
 
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\State;
 
 class StateFilter extends Filter
 {
@@ -17,6 +16,6 @@ class StateFilter extends Filter
      */
     public function getQuery()
     {
-        return Product::query();
+        return State::query();
     }
 }

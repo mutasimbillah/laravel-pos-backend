@@ -2,9 +2,9 @@
 
 namespace App\Filters;
 
-use App\Models\Product;
+use App\Models\Customer;
 
-class ProductFilter extends Filter
+class CustomerFilter extends Filter
 {
     public function query($search)
     {
@@ -16,6 +16,6 @@ class ProductFilter extends Filter
      */
     public function getQuery()
     {
-        return Product::query();
+        return Customer::query();
     }
 }
