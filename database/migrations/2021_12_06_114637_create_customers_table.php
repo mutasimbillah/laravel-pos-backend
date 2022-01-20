@@ -15,12 +15,14 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('state_id')->constrained();
+
+            $table->unsignedBigInteger('state_id');
             $table->string('name');
             $table->string('address');
 
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('state_id')->references('id')->on('states');
         });
     }
 

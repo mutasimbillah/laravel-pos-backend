@@ -16,15 +16,18 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('state_id');
+            $table->unsignedBigInteger('customer_id');
+
             $table->string('sub_total');
-            $table->string('state_id');
             $table->string('tax');
             $table->string('total');
 
-            $table->foreign('product_id')->references('id')->on('products');
-
             $table->timestamps();
+            $table->softDeletes();
+
+            //$table->foreign('state_id')->references('id')->on('states');
+            //$table->foreign('customer_id')->references('id')->on('customers');
         });
     }
 
