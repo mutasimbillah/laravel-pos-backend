@@ -25,21 +25,15 @@ Route::get('/test', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::apiResource('product', ProductController::class);
-Route::apiResource('state', StateController::class);
-Route::apiResource('customer', CustomerController::class);
-Route::apiResource('order', OrderController::class);
-
-
-
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user', [ApiController::class, 'user']);
 });
 
-// Route::group(['middleware' => ['auth:api', 'role:super']], function () {
-//     Route::get('/user', function (Request $request) {
-//         return $request->user();
-//     });
-//Route::apiResource('/notification', NotificationController::class)->only(['store', 'index', 'show']);
-// });
+Route::group(['middleware' => ['auth:api', 'role:admin']], function () {
+
+    Route::apiResource('product', ProductController::class);
+    Route::apiResource('state', StateController::class);
+    Route::apiResource('customer', CustomerController::class);
+    Route::apiResource('order', OrderController::class);
+});
