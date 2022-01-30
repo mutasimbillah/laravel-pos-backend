@@ -10,4 +10,9 @@ class State extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
 }
