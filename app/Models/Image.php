@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\EloquentAutoComplete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -12,15 +11,13 @@ use Illuminate\Support\Str;
  * Class Image
  * @package App\Models
  */
-class Image extends Model
-{
+class Image extends Model {
     protected $guarded = [];
 
-    public function __construct(array $attributes = [])
-    {
+    public function __construct(array $attributes = []) {
         parent::__construct($attributes);
 
-        static::deleting(function (Image $image){
+        static::deleting(function (Image $image) {
             Storage::delete($image->name);
         });
     }
@@ -31,33 +28,29 @@ class Image extends Model
      * @param string $type
      * @return mixed
      */
-    public static function upload($parent, $image, $type = null)
-    {
+    public static function upload($parent, $image, $type = null) {
         $name = $image->store('images');
 
         return static::create([
-            'name' => $name,
-            'parent_id' => $parent->id,
+            'name'        => $name,
+            'parent_id'   => $parent->id,
             'parent_type' => get_class($parent),
-            'type' => $type
+            'type'        => $type,
         ]);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function parent()
-    {
+    public function parent() {
         return $this->morphTo();
     }
 
-    public function getUrlAttribute()
-    {
+    public function getUrlAttribute() {
         return Storage::url($this->name);
     }
 
-    public function toArray()
-    {
+    public function toArray() {
         return $this->only(['id', 'url']);
     }
 }

@@ -4,18 +4,15 @@ namespace App\Filters;
 
 use App\Models\Product;
 
-class ProductFilter extends Filter
-{
-    public function query($search)
-    {
+class ProductFilter extends Filter {
+    public function query($search) {
         $this->query->where('name', 'like', "%{$search}%");
     }
 
     /**
      * @inheritDoc
      */
-    public function getQuery()
-    {
+    public function getQuery() {
         return Product::query();
     }
 }

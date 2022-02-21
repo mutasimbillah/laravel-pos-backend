@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App\Enums;
 
-
-interface Status
-{
+interface Status {
     const INACTIVE = 0;
 
     const ACTIVE = 1;

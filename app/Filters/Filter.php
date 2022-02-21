@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Filters;
-
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -11,8 +9,7 @@ use Illuminate\Support\Arr;
  * Base filter class for creating filterable resources
  * @author Nazmul Alam <nazmulpcc@gmail.com>
  */
-abstract class Filter
-{
+abstract class Filter {
     /**
      * @var Builder
      */
@@ -37,14 +34,12 @@ abstract class Filter
      */
     protected $defaults = [];
 
-    public function filters(array $filters)
-    {
+    public function filters(array $filters) {
         $this->filters = $filters;
         return $this;
     }
 
-    public function defaults(array $defaults)
-    {
+    public function defaults(array $defaults) {
         $this->defaults = $defaults;
         return $this;
     }
@@ -56,8 +51,7 @@ abstract class Filter
      */
     abstract public function getQuery();
 
-    public static function new(Builder &$query = null)
-    {
+    public static function new (Builder &$query = null) {
         $instance = new static();
         if (!$query) {
             $query = $instance->getQuery();
@@ -65,14 +59,12 @@ abstract class Filter
         return $instance->on($query);
     }
 
-    public function on(&$query)
-    {
+    public function on(&$query) {
         $this->query = $query;
         return $this;
     }
 
-    public function apply()
-    {
+    public function apply() {
         if (!isset($this->filters)) {
             $this->filters = request()->all();
         }
@@ -88,13 +80,11 @@ abstract class Filter
         return $this->query;
     }
 
-    public function get()
-    {
+    public function get() {
         return $this->apply()->get();
     }
 
-    public function first()
-    {
+    public function first() {
         return $this->get()->first();
     }
 
@@ -103,15 +93,13 @@ abstract class Filter
      * @param $column
      * @return false|void
      */
-    protected function sort($column)
-    {
+    protected function sort($column) {
         if (in_array($column, $this->allowedSorts)) {
             $this->query->orderBy($this->query->getQuery()->from . ".{$column}", $this->filters['order'] ?? 'desc');
         }
     }
 
-    protected function with($relations)
-    {
+    protected function with($relations) {
         $relations = array_intersect($this->allowedRelations, explode(',', $relations));
         $this->query->with($relations);
     }
@@ -124,8 +112,7 @@ abstract class Filter
      * @param $value
      * @return array
      */
-    protected function normalizeFilterValue($filter, $value)
-    {
+    protected function normalizeFilterValue($filter, $value) {
         if (is_numeric($filter)) {
             $filter = $value;
             $value = true;

@@ -2,8 +2,7 @@
 
 namespace App\Enums;
 
-interface UserType
-{
+interface UserType {
     const SUPER = 'super';
 
     const ADMIN = 'admin';

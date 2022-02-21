@@ -10,15 +10,13 @@ use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends ApiController
-{
+class AuthController extends ApiController {
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
@@ -27,8 +25,7 @@ class AuthController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(LoginRequest $request)
-    {
+    public function login(LoginRequest $request) {
         $user = User::where($request->only('phone'))->first();
         if (!$user) {
             return $this->failed(null, "No user Found with the mobile number");
@@ -47,8 +44,7 @@ class AuthController extends ApiController
      * @param RegistrationRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegistrationRequest $request)
-    {
+    public function register(RegistrationRequest $request) {
         $data = Arr::except($request->validated(), 'image');
         $data['phone_verified_at'] = now();
         $data['password'] = bcrypt($data['password']);
@@ -64,8 +60,7 @@ class AuthController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
-    {
+    public function logout() {
         $this->auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -76,8 +71,7 @@ class AuthController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
-    {
+    public function refresh() {
         return $this->respondWithToken($this->auth()->refresh());
     }
 
@@ -88,12 +82,11 @@ class AuthController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
-    {
+    protected function respondWithToken($token) {
         return $this->success([
             'access_token' => $token ?: 'NAN',
-            'token_type' => 'Bearer',
-            'expires_in' => $this->auth()->factory()->getTTL()
+            'token_type'   => 'Bearer',
+            'expires_in'   => $this->auth()->factory()->getTTL(),
         ]);
     }
 }

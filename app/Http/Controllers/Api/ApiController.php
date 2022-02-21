@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\JWTGuard;
 
-class ApiController extends BaseController
-{
+class ApiController extends BaseController {
     /**
      * @param mixed $data
      * @param string $message
@@ -20,11 +19,10 @@ class ApiController extends BaseController
      * @param bool $success
      * @return \Illuminate\Http\JsonResponse
      */
-    public function success($data = null, $message = "", $status = 200, $success = true)
-    {
+    public function success($data = null, $message = "", $status = 200, $success = true) {
         $response = [
             'success' => $success,
-            'message' => $message
+            'message' => $message,
         ];
 
         if (isset($data->resource) && $data->resource instanceof AbstractPaginator) {
@@ -40,9 +38,9 @@ class ApiController extends BaseController
         if (app()->environment() === 'local') {
             $log = collect(DB::getQueryLog());
             $response['queries'] = [
-                'log' => $log->toArray(),
-                'time' => $log->sum('time'),
-                'duplicates' => $log->count() - $log->unique('query')->count()
+                'log'        => $log->toArray(),
+                'time'       => $log->sum('time'),
+                'duplicates' => $log->count() - $log->unique('query')->count(),
             ];
         }
 
@@ -56,8 +54,7 @@ class ApiController extends BaseController
      * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public function failed($data = null, $message = "", $status = 400)
-    {
+    public function failed($data = null, $message = "", $status = 400) {
         return $this->success($data, $message, $status, false);
     }
 
@@ -65,8 +62,7 @@ class ApiController extends BaseController
      * Send an unauthorized response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function unauthorized()
-    {
+    public function unauthorized() {
         return $this->failed(null, 'Unauthorized', 401);
     }
 
@@ -78,24 +74,21 @@ class ApiController extends BaseController
      *
      * @return JwtGuard
      */
-    protected function auth()
-    {
+    protected function auth() {
         return Auth::guard('api');
     }
 
     /**
      * @return User|null
      */
-    protected function user()
-    {
+    protected function user() {
         return $this->auth()->user();
     }
 
     /**
      * @return int|string
      */
-    protected function userId()
-    {
+    protected function userId() {
         return $this->auth()->id();
     }
 
@@ -103,8 +96,7 @@ class ApiController extends BaseController
      * @param int $default
      * @return int
      */
-    protected function limit($default = 10)
-    {
+    protected function limit($default = 10) {
         return (int) request()->input('limit', $default);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\EloquentAutoComplete;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -12,8 +11,7 @@ use Illuminate\Support\Facades\Cache;
  * @property array $value
  * @method static Builder key(string $key)
  */
-class Setting extends Model
-{
+class Setting extends Model {
 
     public $timestamps = false;
 
@@ -21,12 +19,11 @@ class Setting extends Model
 
     protected $casts = ['value' => 'array'];
 
-    protected static function boot()
-    {
+    protected static function boot() {
         parent::boot();
 
         // Once we update the setting in db, we should remove it from cache
-        static::updated(function($setting){
+        static::updated(function ($setting) {
             Cache::forget("setting-{$setting->key}");
         });
     }
@@ -34,8 +31,7 @@ class Setting extends Model
     /**
      * Scope for key
      */
-    public function scopeKey($query, $key)
-    {
+    public function scopeKey($query, $key) {
         $query->where('key', $key);
     }
 }
