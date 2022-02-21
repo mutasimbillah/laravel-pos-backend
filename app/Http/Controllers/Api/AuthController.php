@@ -28,7 +28,7 @@ class AuthController extends ApiController {
     public function login(LoginRequest $request) {
         $user = User::where($request->only('phone'))->first();
         if (!$user) {
-            return $this->failed(null, "No user Found with the mobile number");
+            return $this->failed("No user Found with the mobile number");
             // signal that the phone doesn't exist in db
         }
         if (!Hash::check($request->input('password'), $user->password) || $user->status !== Status::ACTIVE) {

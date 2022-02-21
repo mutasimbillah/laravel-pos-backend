@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\RelationID;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CustomerRequest extends FormRequest {
@@ -22,7 +21,7 @@ class CustomerRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'state_id' => ['required', 'integer', new RelationID],
+            'state_id' => 'required|integer',
             'name'     => 'required|string|max:250',
             'address'  => 'required|string|max:250',
         ];

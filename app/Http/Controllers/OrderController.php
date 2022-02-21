@@ -6,6 +6,7 @@ use App\Filters\OrderFilter;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -21,22 +22,35 @@ class OrderController extends ApiController {
     }
 
     public function store(OrderRequest $request) {
-        $data = $request->validated()['products'];
-        $products = Product::findMany(Arr::pluck($data, 'id'));
+        $data = $request->validated();
+        $OrderProducts = $data['products'];
+        $products = Product::findMany(Arr::pluck($data['products'], 'id'));
+        $state = State::where('id', $data['state_id'])->first();
+        $customer = Customer::where('id', $data['customer_id'])->first();
+        //return $products;
+        if (!$customer) {
+            return $this->failed("No Customer found with the id", 404);
+        }
+        if (!$state) {
+            return $this->failed("No state found with the id", 404);
+        }
+        if (count($products) == 0) {
+            return $this->failed("No Products found with the ids", 404);
+        }
+
         $subTotal = 0;
         $item = 0;
         foreach ($products as $product) {
-            $subTotal += $product['price'] * $data[$item]['quantity'];
+            $subTotal += $product['price'] * $OrderProducts[$item]['quantity'];
             $item++;
         }
 
-        $state = State::where('id', $request['state_id'])->first();
-
+        //calculate tax
         $tax = ($subTotal * $state['tax']) / 100;
 
         $order = Order::create([
-            'customer_id' => $request['customer_id'],
-            'state_id'    => $request['state_id'],
+            'customer_id' => $data['customer_id'],
+            'state_id'    => $data['state_id'],
             'sub_total'   => $subTotal,
             'tax'         => $tax,
             'total'       => $subTotal + $tax,
@@ -49,7 +63,7 @@ class OrderController extends ApiController {
                 'order_id'   => $order['id'],
                 'product_id' => $product['id'],
                 'price'      => $product['price'],
-                'quantity'   => $data[$item]['quantity'],
+                'quantity'   => $OrderProducts[$item]['quantity'],
             ]));
             $item++;
         }
@@ -63,22 +77,37 @@ class OrderController extends ApiController {
     }
 
     public function update(OrderRequest $request, Order $order) {
+
+        $data = $request->validated();
+        $OrderProducts = $data['products'];
+        $products = Product::findMany(Arr::pluck($data['products'], 'id'));
+        $state = State::where('id', $data['state_id'])->first();
+        $customer = Customer::where('id', $data['customer_id'])->first();
+        //return $products;
+        if (!$customer) {
+            return $this->failed("No Customer found with the id", 404);
+        }
+        if (!$state) {
+            return $this->failed("No state found with the id", 404);
+        }
+        if (count($products) == 0) {
+            return $this->failed("No Products found with the ids", 404);
+        }
+
         $orderItems = OrderItem::where('order_id', $order['id']);
         $orderItems->delete();
 
-        $data = $request->validated()['products'];
-        $products = Product::findMany(Arr::pluck($data, 'id'));
         $subTotal = 0;
         $item = 0;
         foreach ($products as $product) {
-            $subTotal += $product['price'] * $data[$item]['quantity'];
+            $subTotal += $product['price'] * $OrderProducts[$item]['quantity'];
             $item++;
         }
-        $state = State::where('id', $request['state_id'])->first();
+        //calculate tax
         $tax = ($subTotal * $state['tax']) / 100;
 
-        $order['customer_id'] = $request['customer_id'];
-        $order['state_id'] = $request['state_id'];
+        $order['customer_id'] = $data['customer_id'];
+        $order['state_id'] = $data['state_id'];
         $order['sub_total'] = $subTotal;
         $order['tax'] = $tax;
         $order['total'] = $subTotal + $tax;
@@ -91,7 +120,7 @@ class OrderController extends ApiController {
                 'order_id'   => $order['id'],
                 'product_id' => $product['id'],
                 'price'      => $product['price'],
-                'quantity'   => $data[$item]['quantity'],
+                'quantity'   => $OrderProducts[$item]['quantity'],
             ]));
             $item++;
         }

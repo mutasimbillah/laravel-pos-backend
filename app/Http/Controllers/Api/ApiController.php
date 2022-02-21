@@ -54,7 +54,7 @@ class ApiController extends BaseController {
      * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public function failed($data = null, $message = "", $status = 400) {
+    public function failed($message = "", $status = 400, $data = null) {
         return $this->success($data, $message, $status, false);
     }
 
@@ -63,7 +63,7 @@ class ApiController extends BaseController {
      * @return \Illuminate\Http\JsonResponse
      */
     public function unauthorized() {
-        return $this->failed(null, 'Unauthorized', 401);
+        return $this->failed('Unauthorized', 401);
     }
 
     /**

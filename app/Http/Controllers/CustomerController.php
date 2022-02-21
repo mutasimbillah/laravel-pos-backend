@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use App\Models\State;
 use Illuminate\Http\Request;
 
 class CustomerController extends ApiController {
@@ -17,6 +18,11 @@ class CustomerController extends ApiController {
     }
 
     public function store(CustomerRequest $request) {
+        $data = $request->validated();
+        $state = State::find($data['state_id']);
+        if (!$state) {
+            return $this->failed("No state found with the id", 404);
+        }
         $customer = Customer::query()->create($request->validated());
         return $this->success($customer);
     }
@@ -27,6 +33,10 @@ class CustomerController extends ApiController {
 
     public function update(CustomerRequest $request, Customer $customer) {
         $data = $request->validated();
+        $state = State::find($data['state_id']);
+        if (!$state) {
+            return $this->failed("No state found with the id", 404);
+        }
         $customer->update($data);
         return $this->success(CustomerResource::make($customer));
     }
