@@ -1,8 +1,10 @@
-FROM composer:2 as composer
+FROM nazmulpcc/php:8.0-cli as composer
 WORKDIR /app
 
 COPY composer.json composer.lock /app/
-RUN composer install  \
+RUN wget https://getcomposer.org/composer.phar -O /usr/bin/composer && \ 
+    chmod +x /usr/bin/composer && \
+    composer install  \
     --ignore-platform-reqs \
     --no-ansi \
     --no-autoloader \
